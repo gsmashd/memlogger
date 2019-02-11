@@ -57,6 +57,13 @@ def cleanup(now):
     date = yesterday.strftime("%Y-%m-%d")
     if os.path.exists(os.path.join(OUTPUTDIR,"data","{}.data".format(date))):
         os.remove(os.path.join(OUTPUTDIR,"data","{}.data".format(date)))
+    last_month = now - datetime.timedelta(days=40)
+    date = last_month.strftime("%Y-%m-%d")
+    if os.path.exists(os.path.join(OUTPUTDIR,"plot","{}_mem_avail.png".format(date))):
+        os.remove(os.path.join(OUTPUTDIR,"plot","{}_mem_avail.png".format(date)))
+    if os.path.exists(os.path.join(OUTPUTDIR,"plot","{}_mem_used.png".format(date))):
+        os.remove(os.path.join(OUTPUTDIR,"plot","{}_mem_used.png".format(date)))
+
 
 
 NOW = datetime.datetime.now()
