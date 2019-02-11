@@ -7,7 +7,7 @@ pushd /usr/bin/
 sudo ln -s $SCRIPTDIR/memlogger.py memlogger.py
 popd
 TMP_CRONTAB=/tmp/tmp_cron
-sudo crontab -l >> $TMP_CRONTAB
+sudo crontab -l > $TMP_CRONTAB
 echo "* * * * * python3 /usr/bin/memlogger.py" >> $TMP_CRONTAB
 sudo crontab $TMP_CRONTAB
 sudo rm $TMP_CRONTAB
