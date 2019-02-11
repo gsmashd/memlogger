@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 OUTPUTDIR = "/var/log/memlogger/"
 
@@ -34,23 +35,22 @@ def plot_mem(now):
 
     data = pd.read_csv(os.path.join(OUTPUTDIR,"data","{}.data".format(date)))
     data['date'] = pd.to_datetime(data['date'])
-    plt.figure(1)
-    line_used, = plt.plot(data['date'],data['mem_used'],label="Memory used")
-    line_tot, = plt.plot(data['date'],data['mem_tot'],label="Total memory")
-    plt.ylim(0,data['mem_tot'].iloc[-1]+5)
-    plt.title("Memory used {}".format(date))
-    plt.xlabel("Time")
-    plt.ylabel("GB")
-    plt.savefig(os.path.join(OUTPUTDIR,"plot","{}_mem_used.png".format(date)))
 
-    plt.figure(2)
-    line_avail, = plt.plot(data['date'],data['mem_avail'],label="Available memory")
-    line_tot, = plt.plot(data['date'],data['mem_tot'],label="Total memory")
-    plt.ylim(0,data['mem_tot'].iloc[-1]+5)
-    plt.title("Memory available {}".format(date))
-    plt.xlabel("Time")
-    plt.ylabel("GB")
-    plt.savefig(os.path.join(OUTPUTDIR,"plot","{}_mem_avail.png".format(date)))
+    create_fig(data,date,'mem_used')
+    create_fig(data,date,'mem_avail')
+
+def create_fig(data,date,col_name):
+    fig, ax = plt.subplots()
+    ax.plot(data['date'],data[col_name])
+    ax.plot(data['date'],data['mem_tot'])
+    ax.set_ylim(0,data['mem_tot'].iloc[-1]+5)
+    ax.set_title("{} {}".format(col_name,date))
+    ax.set_xlabel("Time")
+    ax.set_ylabel("GB")
+    myFmt = mdates.DateFormatter("%H:%M")
+    ax.xaxis.set_major_formatter(myFmt)
+    fig.autofmt_xdate()
+    fig.savefig(os.path.join(OUTPUTDIR,"plot","{}_{}.png".format(date,col_name)))
 
 def cleanup(now):
     yesterday = now - datetime.timedelta(days=1)
